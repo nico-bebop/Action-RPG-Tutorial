@@ -1,24 +1,24 @@
 extends KinematicBody2D
 
-const ACCELERATION = 500
-const MAX_SPEED = 100
-const FRICTION = 500
-const ROLL_SPEED = 125
+export var acceleration = 500
+export var max_speed = 100
+export var friction = 500
+export var roll_speed = 125
 
-enum{ MOVE, ROLL, ATTACK }
+enum {MOVE, ROLL, ATTACK}
 
 var state = MOVE
 var velocity = Vector2.ZERO
-var rollVector = Vector2.LEFT
+var roll_vector = Vector2.LEFT
 
-#onready var animationPlayer = $AnimationPlayer
-onready var animationTree = $AnimationTree
-onready var animationState = animationTree.get("parameters/playback")
-onready var swordHitbox = $HitboxPivot/SwordHitbox
+#onready var animation_player = $AnimationPlayer
+onready var animation_tree = $AnimationTree
+onready var animation_state = animation_tree.get("parameters/playback")
+onready var sword_hitbox = $HitboxPivot/SwordHitbox
 
 func _ready():
-	animationTree.active = true
-	swordHitbox.knockbackVector = rollVector
+	animation_tree.active = true
+	sword_hitbox.knockback_vector = roll_vector
 
 func _physics_process(delta):
 	match state:
@@ -37,19 +37,19 @@ func move_state(delta):
 	input_vector = input_vector.normalized()
 
 	if input_vector != Vector2.ZERO:
-		rollVector = input_vector
-		swordHitbox.knockbackVector = input_vector
+		roll_vector = input_vector
+		sword_hitbox.knockback_vector = input_vector
 		
-		animationTree.set("parameters/Idle/blend_position", input_vector)
-		animationTree.set("parameters/Run/blend_position", input_vector)
-		animationTree.set("parameters/Attack/blend_position", input_vector)
-		animationTree.set("parameters/Roll/blend_position", input_vector)
+		animation_tree.set("parameters/Idle/blend_position", input_vector)
+		animation_tree.set("parameters/Run/blend_position", input_vector)
+		animation_tree.set("parameters/Attack/blend_position", input_vector)
+		animation_tree.set("parameters/Roll/blend_position", input_vector)
 		
-		animationState.travel("Run")
-		velocity = velocity.move_toward(input_vector * MAX_SPEED, ACCELERATION * delta)
+		animation_state.travel("Run")
+		velocity = velocity.move_toward(input_vector * max_speed, acceleration * delta)
 	else:
-		animationState.travel("Idle")
-		velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
+		animation_state.travel("Idle")
+		velocity = velocity.move_toward(Vector2.ZERO, friction * delta)
 		
 	move()
 	
@@ -64,11 +64,11 @@ func move():
 
 func attack_state():
 	velocity = Vector2.ZERO
-	animationState.travel("Attack")
+	animation_state.travel("Attack")
 
 func roll_state():
-	velocity = rollVector * ROLL_SPEED
-	animationState.travel("Roll")
+	velocity = roll_vector * roll_speed
+	animation_state.travel("Roll")
 	move()
 
 
@@ -76,5 +76,5 @@ func attack_animation_finished():
 	state = MOVE
 
 func roll_animation_finished():
-	velocity = rollVector * MAX_SPEED
+	velocity = roll_vector * max_speed
 	state = MOVE

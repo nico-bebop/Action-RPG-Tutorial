@@ -1,3 +1,3 @@
-extends Area2D
+extends "res://Overlap/Hitbox.gd"
 
-var knockbackVector = Vector2.ZERO
+var knockback_vector = Vector2.ZERO
