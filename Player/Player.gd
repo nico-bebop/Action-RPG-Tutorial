@@ -20,6 +20,7 @@ onready var hurtbox = $Hurtbox
 
 
 func _ready():
+	randomize()
 	stats.connect("no_health", self, "queue_free")
 	animation_tree.active = true
 	sword_hitbox.knockback_vector = roll_vector
